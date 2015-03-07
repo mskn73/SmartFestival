@@ -131,10 +131,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                     break;
             }
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
-            if (socialNetwork.isConnected())
-                socialNetwork.logout();
-
-            socialNetwork.requestLogin();
+            if (!socialNetwork.isConnected())
+                socialNetwork.requestLogin();
 
             startProfile(socialNetwork.getID());
         }

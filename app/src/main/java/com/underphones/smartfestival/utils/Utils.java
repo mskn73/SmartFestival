@@ -1,6 +1,9 @@
 package com.underphones.smartfestival.utils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -49,5 +52,24 @@ public class Utils {
         } catch (Exception e) {
             Log.e("exception", e.toString());
         }
+    }
+
+    public static String getEmail(Context context) {
+        AccountManager accountManager = AccountManager.get(context);
+        Account account = getAccount(accountManager);
+        if (account == null) {
+            return null;
+        } else {
+            return account.name;
+        }
+    }
+    private static Account getAccount(AccountManager accountManager) {
+        Account[] accounts = accountManager.getAccountsByType("com.google");
+        Account account;
+        if (accounts.length > 0) {
+            account = accounts[0];
+        } else {
+            account = null;
+        } return account;
     }
 }

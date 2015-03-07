@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onFragmentLogin(String token, String mail) {
-        mClient.register(token, mail);
+        mClient.register(token, Utils.getEmail(getApplicationContext()));
     }
 
     @Override
