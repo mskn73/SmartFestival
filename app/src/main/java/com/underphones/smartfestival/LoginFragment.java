@@ -52,13 +52,14 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         //Use manager to manage SocialNetworks
         mSocialNetworkManager = (SocialNetworkManager) getFragmentManager().findFragmentByTag(MainActivity.SOCIAL_NETWORK_TAG);
 
+
         //Check if manager exist
         if (mSocialNetworkManager == null) {
             mSocialNetworkManager = new SocialNetworkManager();
 
             //Init and add to manager LinkedInSocialNetwork
             GooglePlusSocialNetwork gpNetwork = new GooglePlusSocialNetwork(this);
-            mSocialNetworkManager.addSocialNetwork(gpNetwork);
+            mSocialNetworkManager.addSocialNetwork(gpNetwork);;
 
             //Initiate every network from mSocialNetworkManager
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, MainActivity.SOCIAL_NETWORK_TAG).commit();
@@ -130,16 +131,11 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                     break;
             }
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
-            if(!socialNetwork.isConnected()) {
-                if(networkId != 0) {
-                    socialNetwork.requestLogin();
-                    MainActivity.showProgress("Loading social person");
-                } else {
-                    Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
-                }
+            if (socialNetwork.isConnected())
+                socialNetwork.logout();
 
+            socialNetwork.requestLogin();
 
-            }
             startProfile(socialNetwork.getID());
         }
     };
@@ -169,6 +165,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         mSocialNetworkLogged.requestAccessToken(new OnRequestAccessTokenCompleteListener() {
             @Override
             public void onRequestAccessTokenComplete(int socialNetworkID, AccessToken accessToken) {
+                MainActivity.hideProgress();
                 mListener.onFragmentLogin(accessToken.token, null);
                 Log.d("Access token: ", "SocialNetwork id = " + socialNetworkID + " accesstoken = " + accessToken.token + " secret = " + accessToken.secret);
             }
