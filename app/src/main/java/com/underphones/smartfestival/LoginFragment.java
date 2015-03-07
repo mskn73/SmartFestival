@@ -3,6 +3,7 @@ package com.underphones.smartfestival;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +65,13 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             //Initiate every network from mSocialNetworkManager
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, MainActivity.SOCIAL_NETWORK_TAG).commit();
             mSocialNetworkManager.setOnInitializationCompleteListener(this);
+
+            if (gpNetwork.isConnected()){
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new ContactsFragment())
+                        .commit();
+            }
         } else {
             //if manager exist - get and setup login only for initialized SocialNetworks
             if(!mSocialNetworkManager.getInitializedSocialNetworks().isEmpty()) {
@@ -74,6 +82,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 }
             }
         }
+
 
         return rootView;
     }

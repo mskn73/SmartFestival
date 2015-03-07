@@ -131,7 +131,7 @@ public class Client {
 
 
     //CONSTANTS
-    public final String METHOD_REGISTER="/register.php";
-    public final String METHOD_SEND_POSITION="/sendposition.php";
-    public final String METHOD_GET_USERS="/getUsers.php";
+    public static final String METHOD_REGISTER="/register.php";
+    public static final String METHOD_SEND_POSITION="/sendposition.php";
+    public static final String METHOD_GET_USERS="/getUsers.php";
 }
