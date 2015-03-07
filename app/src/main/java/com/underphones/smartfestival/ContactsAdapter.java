@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -42,6 +43,7 @@ public class ContactsAdapter extends ArrayAdapter<ContactBean> {
             //viewHolder.contact_image.setImageDrawable();
             viewHolder.contact_name.setText(cb.getName());
 
+            Picasso.with(context).load(cb.getImage()).into(viewHolder.contact_image);
         }
 
         return rowView;
@@ -51,5 +53,11 @@ public class ContactsAdapter extends ArrayAdapter<ContactBean> {
         RoundedImageView contact_image;
         TextView contact_name;
 
+    }
+
+    @Override
+    public int getCount() {
+        if (contactList==null) return 0;
+        return super.getCount();
     }
 }
