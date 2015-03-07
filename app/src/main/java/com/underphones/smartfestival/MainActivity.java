@@ -20,6 +20,8 @@ import com.underphones.smartfestival.controller.Client;
 import com.underphones.smartfestival.controller.IClientCodeEvents;
 import com.underphones.smartfestival.utils.Utils;
 
+import org.json.JSONObject;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, LoginFragment.OnFragmentInteractionListener, IClientCodeEvents {
@@ -44,7 +46,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void CodeFinished(String methodName, byte[] data) {
+    public void CodeFinished(String methodName, JSONObject data) {
         //TODO: goto other site
         hideProgress();
     }
@@ -55,8 +57,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onFragmentLogin(String token, String name, String photo) {
-        mClient.loggin(name,photo,token);
+    public void onFragmentLogin(String token, String mail) {
+        mClient.register(token, mail);
     }
 
     @Override

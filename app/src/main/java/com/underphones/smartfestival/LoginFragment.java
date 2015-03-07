@@ -3,17 +3,18 @@ package com.underphones.smartfestival;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.github.gorbin.asne.core.AccessToken;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
-import com.github.gorbin.asne.core.listener.OnRequestSocialPersonCompleteListener;
-import com.github.gorbin.asne.core.persons.SocialPerson;
+import com.github.gorbin.asne.core.listener.OnRequestAccessTokenCompleteListener;
 import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  * {@link com.underphones.smartfestival.LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener,OnRequestSocialPersonCompleteListener {
+public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener {
 
     public static SocialNetworkManager mSocialNetworkManager;
     private OnFragmentInteractionListener mListener;
@@ -104,7 +105,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentLogin(String token, String name, String photo);
+        public void onFragmentLogin(String token, String mail);
     }
 
 
@@ -165,8 +166,17 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
 
         MainActivity.showProgress("Loading person");
         mSocialNetworkLogged = mSocialNetworkManager.getSocialNetwork(networkId);
-        mSocialNetworkLogged.setOnRequestCurrentPersonCompleteListener(LoginFragment.this);
-        mSocialNetworkLogged.requestCurrentPerson();
+        mSocialNetworkLogged.requestAccessToken(new OnRequestAccessTokenCompleteListener() {
+            @Override
+            public void onRequestAccessTokenComplete(int socialNetworkID, AccessToken accessToken) {
+                mListener.onFragmentLogin(accessToken.token, null);
+                Log.d("Access token: ", "SocialNetwork id = " + socialNetworkID + " accesstoken = " + accessToken.token + " secret = " + accessToken.secret);
+            }
+
+            @Override
+            public void onError(int socialNetworkID, String requestID, String errorMessage, Object data) {
+            }
+        });
 
         //mListener.onFragmentLogin(null);
     }
@@ -182,10 +192,4 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         }
     }
 
-    @Override
-    public void onRequestSocialPersonSuccess(int i, SocialPerson socialPerson) {
-        MainActivity.hideProgress();
-        mListener.onFragmentLogin(mSocialNetworkLogged.getAccessToken().token, socialPerson.name, socialPerson.avatarURL);
-
-    }
 }
