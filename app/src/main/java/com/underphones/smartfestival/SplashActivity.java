@@ -7,11 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.underphones.smartfestival.utils.Statistics;
 
 
 public class SplashActivity extends ActionBarActivity {
@@ -23,50 +22,33 @@ public class SplashActivity extends ActionBarActivity {
     private TextView debug;
     private Context context;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        debug = (TextView) findViewById(R.id.textViewDevelop);
         splashImage = (ImageView) findViewById(R.id.imageView);
         context = (Activity) this;
-        if (BuildConfig.DEBUG)
-            debug.setVisibility(View.VISIBLE);
-        else
-            debug.setVisibility(View.GONE);
-
-        task = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                //Check server and database
-                try {
-
-                    Picasso.with(context).load("").centerCrop().into(splashImage);
-                    Thread.sleep(100);
-
-
-                } catch (Exception e) {
+        int delay = 200;
+        updateImage(1);
+        for (int i = 2; i < 13; i++) {
+            final Integer finalI = i;
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    updateImage(finalI);
                 }
-                return null;
+            }, i * delay);
+        }
+
+
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                finish();
             }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-                showDebugInfo();
-
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // acciones que se ejecutan tras los milisegundos
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        finish();
-                    }
-                }, 700);
+        }, 14 * delay);
 
 
-            }
-        }.execute();
     }
 
     @Override
@@ -87,5 +69,59 @@ public class SplashActivity extends ActionBarActivity {
         }
 
 
+    }
+
+    private void updateImage(int progress) {
+        //Integer[] resolution = Statistics.getResolution(context);
+        int drawable = 0;
+        switch (progress) {
+            case 0:
+                drawable = R.drawable.ic_splash_image01;
+                break;
+            case 1:
+                drawable = R.drawable.ic_splash_gajos01;
+                break;
+            case 2:
+                drawable = R.drawable.ic_splash_gajos02;
+                break;
+            case 3:
+                drawable = R.drawable.ic_splash_gajos03;
+                break;
+            case 4:
+                drawable = R.drawable.ic_splash_gajos04;
+                break;
+            case 5:
+                drawable = R.drawable.ic_splash_gajos05;
+                break;
+            case 6:
+                drawable = R.drawable.ic_splash_gajos06;
+                break;
+
+            case 7:
+                drawable = R.drawable.ic_splash_gajos07;
+                break;
+
+            case 8:
+                drawable = R.drawable.ic_splash_gajos08;
+                break;
+
+            case 9:
+                drawable = R.drawable.ic_splash_gajos09;
+                break;
+
+            case 10:
+                drawable = R.drawable.ic_splash_gajos10;
+                break;
+            case 11:
+                drawable = R.drawable.ic_splash_gajos11;
+                break;
+            case 12:
+                drawable = R.drawable.ic_splash_image03;
+                break;
+
+
+        }
+        //Picasso.with(context).load(drawable).resize(resolution[0], resolution[1]).centerCrop().into(splashImage);
+        splashImage.setImageResource(drawable);
     }
 }
