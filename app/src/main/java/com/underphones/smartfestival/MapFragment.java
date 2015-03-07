@@ -27,7 +27,8 @@ public class MapFragment extends Fragment {
     private float latitude;
     private float longitude;
 
-    private MapFragment() {
+    private MapFragment(Bundle b) {
+
 
     }
 
