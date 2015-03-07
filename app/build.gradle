@@ -26,4 +26,5 @@ dependencies {
     compile 'com.github.asne:asne-googleplus:0.3.3'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.squareup.picasso:picasso:2.5.0'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
 }
