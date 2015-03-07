@@ -24,4 +24,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
 
     compile 'com.github.asne:asne-googleplus:0.3.3'
+
+    compile 'com.loopj.android:android-async-http:1.4.5'
 }
