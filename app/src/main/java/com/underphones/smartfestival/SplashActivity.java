@@ -116,7 +116,7 @@ public class SplashActivity extends ActionBarActivity {
                 drawable = R.drawable.ic_splash_gajos11;
                 break;
             case 12:
-                drawable = R.drawable.ic_splash_image03;
+                drawable = R.drawable.ic_splash_image02;
                 break;
 
 
