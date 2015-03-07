@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,14 +15,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import com.underphones.smartfestival.controller.Client;
+import com.underphones.smartfestival.controller.IClientCodeEvents;
+import com.underphones.smartfestival.utils.Utils;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LoginFragment.OnFragmentInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LoginFragment.OnFragmentInteractionListener, IClientCodeEvents {
     public static final String SOCIAL_NETWORK_TAG = "SocialIntegrationMain.SOCIAL_NETWORK_TAG";
     private static ProgressDialog pd;
     static Context context;
+    private Client mClient;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,16 +39,34 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     @Override
-    public void onFragmentLogin(Uri uri) {
-        Toast.makeText(getApplicationContext(), "logged", Toast.LENGTH_SHORT).show();
+    public void CodeStartedRequest(String methodName) {
+        showProgress("Registering");
+    }
+
+    @Override
+    public void CodeFinished(String methodName, byte[] data) {
+        //TODO: goto other site
+        hideProgress();
+    }
+
+    @Override
+    public void CodeFinishedWithException(int statusCode, String methodName, Throwable ex) {
+        hideProgress();
+    }
+
+    @Override
+    public void onFragmentLogin(String token, String name, String photo) {
+        mClient.loggin(name,photo,token);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = this;
 
+        Utils.printHashKey(this);
+        context = this;
+        mClient=new Client(this, getApplicationContext());
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -167,7 +188,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     protected static void hideProgress() {
-        pd.dismiss();
+        if (pd!=null)
+            pd.dismiss();
     }
 
     @Override

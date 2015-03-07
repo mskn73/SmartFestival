@@ -1,7 +1,6 @@
 package com.underphones.smartfestival;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.widget.Toast;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
+import com.github.gorbin.asne.core.listener.OnRequestSocialPersonCompleteListener;
+import com.github.gorbin.asne.core.persons.SocialPerson;
 import com.github.gorbin.asne.googleplus.GooglePlusSocialNetwork;
 
 import java.util.List;
@@ -24,12 +25,14 @@ import java.util.List;
  * {@link com.underphones.smartfestival.LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener {
+public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener,OnRequestSocialPersonCompleteListener {
 
     public static SocialNetworkManager mSocialNetworkManager;
     private OnFragmentInteractionListener mListener;
 
     private Button googleplus;
+
+    private SocialNetwork mSocialNetworkLogged;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -73,12 +76,6 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         return rootView;
     }
 
-    public void onLoginOk(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentLogin(uri);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -107,7 +104,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentLogin(Uri uri);
+        public void onFragmentLogin(String token, String name, String photo);
     }
 
 
@@ -139,9 +136,10 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 } else {
                     Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
                 }
-            } else {
-                startProfile(socialNetwork.getID());
+
+
             }
+            startProfile(socialNetwork.getID());
         }
     };
 
@@ -164,7 +162,13 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 .replace(R.id.container, profile)
                 .commit();
                 */
-        Toast.makeText(getActivity().getApplicationContext(), "Logged", Toast.LENGTH_LONG).show();
+
+        MainActivity.showProgress("Loading person");
+        mSocialNetworkLogged = mSocialNetworkManager.getSocialNetwork(networkId);
+        mSocialNetworkLogged.setOnRequestCurrentPersonCompleteListener(LoginFragment.this);
+        mSocialNetworkLogged.requestCurrentPerson();
+
+        //mListener.onFragmentLogin(null);
     }
 
 
@@ -176,5 +180,12 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                     break;
             }
         }
+    }
+
+    @Override
+    public void onRequestSocialPersonSuccess(int i, SocialPerson socialPerson) {
+        MainActivity.hideProgress();
+        mListener.onFragmentLogin(mSocialNetworkLogged.getAccessToken().token, socialPerson.name, socialPerson.avatarURL);
+
     }
 }
