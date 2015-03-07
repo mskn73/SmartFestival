@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity
 
         Utils.printHashKey(this);
         context = this;
-        mClient=new Client(this, getApplicationContext());
+        mClient = new Client(this, getApplicationContext());
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, new LoginFragment())//PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, new MapFragment())//PlaceholderFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -169,7 +169,9 @@ public class MainActivity extends ActionBarActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            //View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+
             return rootView;
         }
 
@@ -182,7 +184,6 @@ public class MainActivity extends ActionBarActivity
     }
 
 
-
     protected static void showProgress(String message) {
         pd = new ProgressDialog(context);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -193,7 +194,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     protected static void hideProgress() {
-        if (pd!=null)
+        if (pd != null)
             pd.dismiss();
     }
 
